@@ -11,6 +11,8 @@ public class car_controller : MonoBehaviour
     public float max_speed = 5;
     public float max_angular_speed = 4;
     public float tiempo_desaceleracion = 4;
+    Vector3 Move;
+
 
 
     // Start is called before the first frame update
@@ -22,7 +24,6 @@ public class car_controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 Move;
         if (rigi.velocity.z > max_speed || rigi.velocity.z < -max_speed || rigi.velocity.x > max_speed || rigi.velocity.x < -max_speed)
         {
             Move.z = 0;
@@ -42,8 +43,8 @@ public class car_controller : MonoBehaviour
         {
             if (rigi.angularVelocity.y < max_angular_speed && rigi.angularVelocity.y > -max_angular_speed)
             {
-                Move.x = Input.GetAxis("Horizontal") * torque_speed;
-                rigi.AddTorque(new Vector3(0, Move.x * torque_speed, 0), ForceMode.Impulse);
+                //Move.x = Input.GetAxis("Horizontal") * torque_speed;
+                rigi.AddTorque(new Vector3(0, Input.GetAxis("Horizontal") * torque_speed, 0), ForceMode.Impulse);
             }
             else {
                 Move.x = 0;
@@ -60,5 +61,20 @@ public class car_controller : MonoBehaviour
             Move.z -= acceleration*2/tiempo_desaceleracion;
         }
         rigi.AddRelativeForce(Move, ForceMode.Force);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("speed")) {
+            max_speed = max_speed*1.2f;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("speed"))
+        {
+            max_speed = max_speed/1.2f;
+        }
     }
 }
