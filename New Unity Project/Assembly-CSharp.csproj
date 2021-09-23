@@ -54,6 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\car_controller.cs" />
+    <Compile Include="Assets\checkController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
