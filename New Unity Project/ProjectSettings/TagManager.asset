@@ -6,6 +6,8 @@ TagManager:
   tags:
   - check
   - speed
+  - boost
+  - proy
   layers:
   - Default
   - TransparentFX

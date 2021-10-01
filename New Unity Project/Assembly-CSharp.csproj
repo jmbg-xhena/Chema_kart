@@ -53,9 +53,11 @@
     <UnityVersion>2020.3.16f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\car_controller.cs" />
-    <Compile Include="Assets\checkController.cs" />
-    <Compile Include="Assets\CameraFolow.cs" />
+    <Compile Include="Assets\scripts\car_controller.cs" />
+    <Compile Include="Assets\scripts\respawner.cs" />
+    <Compile Include="Assets\scripts\CameraFolow.cs" />
+    <Compile Include="Assets\scripts\checkController.cs" />
+    <Compile Include="Assets\scripts\Bala.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />
@@ -294,20 +296,20 @@
     <Reference Include="UnityEditor.UnityConnectModule">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.16f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Mono.CecilX.Rocks">
+      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.CecilX.Pdb">
+      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Pdb.dll</HintPath>
     </Reference>
     <Reference Include="Mono.CecilX">
       <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.CecilX.Rocks">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Rocks.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.nuget.newtonsoft-json@2.0.0\Runtime\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Mono.CecilX.Mdb">
       <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CecilX.Pdb">
-      <HintPath>Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.Pdb.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.16f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>
@@ -654,8 +656,14 @@
     <Reference Include="System.Xml.Serialization">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.16f1\Editor\Data\NetStandard\compat\2.0.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.InternalAPIEngineBridge.001">
+      <HintPath>Library\ScriptAssemblies\Unity.InternalAPIEngineBridge.001.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.PixelPerfect">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.PixelPerfect.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
@@ -663,14 +671,20 @@
     <Reference Include="Unity.VisualStudio.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Timeline.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Timeline">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.InternalAPIEditorBridge.001">
+      <HintPath>Library\ScriptAssemblies\Unity.InternalAPIEditorBridge.001.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Path.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Path.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
@@ -684,35 +698,51 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.PixelPerfect.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.PixelPerfect.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Timeline.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Common.Runtime">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Common.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.SpriteShape.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.SpriteShape.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Common.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Common.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.SpriteShape.Runtime">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.SpriteShape.Runtime.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="projectCloner.csproj">
-      <Project>{FB920348-E35A-98D3-F79E-427C5079B963}</Project>
-      <Name>projectCloner</Name>
+    <ProjectReference Include="Mirror.csproj">
+      <Project>{988ACF21-EF98-6D5F-046B-2CCEBF96A743}</Project>
+      <Name>Mirror</Name>
     </ProjectReference>
     <ProjectReference Include="kcp2k.csproj">
       <Project>{18D3FB4F-AD22-53B1-7357-F1BA9AC251D1}</Project>
       <Name>kcp2k</Name>
     </ProjectReference>
-    <ProjectReference Include="Mirror.Editor.csproj">
-      <Project>{A681D355-E071-0304-164D-23454BB83C57}</Project>
-      <Name>Mirror.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="where-allocations.csproj">
-      <Project>{1641FDA4-7C82-6DE0-B7B0-A6C6F2091F2A}</Project>
-      <Name>where-allocations</Name>
-    </ProjectReference>
-    <ProjectReference Include="Telepathy.csproj">
-      <Project>{478C1C9E-E33A-E8B5-FEB7-38B7861669D8}</Project>
-      <Name>Telepathy</Name>
-    </ProjectReference>
-    <ProjectReference Include="Mirror.Components.csproj">
-      <Project>{BD86490E-1D59-0A27-9A05-3B4E906EF82A}</Project>
-      <Name>Mirror.Components</Name>
-    </ProjectReference>
     <ProjectReference Include="Mirror.Examples.csproj">
       <Project>{37669553-D7D4-B745-F1B6-DAFD77FB0A64}</Project>
       <Name>Mirror.Examples</Name>
+    </ProjectReference>
+    <ProjectReference Include="projectCloner.csproj">
+      <Project>{FB920348-E35A-98D3-F79E-427C5079B963}</Project>
+      <Name>projectCloner</Name>
+    </ProjectReference>
+    <ProjectReference Include="Mirror.Editor.csproj">
+      <Project>{A681D355-E071-0304-164D-23454BB83C57}</Project>
+      <Name>Mirror.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Mirror.CompilerSymbols.csproj">
       <Project>{F56A6CAF-38AD-3180-19CA-CAE57019CBE2}</Project>
@@ -722,13 +752,21 @@
       <Project>{DB7BAB40-FA77-BE07-FE74-EEA9705455E3}</Project>
       <Name>Mirror.Authenticators</Name>
     </ProjectReference>
-    <ProjectReference Include="Mirror.csproj">
-      <Project>{988ACF21-EF98-6D5F-046B-2CCEBF96A743}</Project>
-      <Name>Mirror</Name>
+    <ProjectReference Include="Telepathy.csproj">
+      <Project>{478C1C9E-E33A-E8B5-FEB7-38B7861669D8}</Project>
+      <Name>Telepathy</Name>
+    </ProjectReference>
+    <ProjectReference Include="where-allocations.csproj">
+      <Project>{1641FDA4-7C82-6DE0-B7B0-A6C6F2091F2A}</Project>
+      <Name>where-allocations</Name>
     </ProjectReference>
     <ProjectReference Include="SimpleWebTransport.csproj">
       <Project>{0855F4C1-8ACE-76F4-8928-120427D632D2}</Project>
       <Name>SimpleWebTransport</Name>
+    </ProjectReference>
+    <ProjectReference Include="Mirror.Components.csproj">
+      <Project>{BD86490E-1D59-0A27-9A05-3B4E906EF82A}</Project>
+      <Name>Mirror.Components</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
