@@ -8,6 +8,8 @@ TagManager:
   - speed
   - boost
   - proy
+  - wall
+  - bala
   layers:
   - Default
   - TransparentFX

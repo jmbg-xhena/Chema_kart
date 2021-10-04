@@ -56,8 +56,11 @@
     <Compile Include="Assets\scripts\car_controller.cs" />
     <Compile Include="Assets\scripts\respawner.cs" />
     <Compile Include="Assets\scripts\CameraFolow.cs" />
-    <Compile Include="Assets\scripts\checkController.cs" />
     <Compile Include="Assets\scripts\Bala.cs" />
+    <Compile Include="Assets\scripts\checkController.cs" />
+    <Compile Include="Assets\Menu_controller.cs" />
+    <Compile Include="Assets\MyNetworkingManager.cs" />
+    <Compile Include="Assets\PlayerSpawn.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />

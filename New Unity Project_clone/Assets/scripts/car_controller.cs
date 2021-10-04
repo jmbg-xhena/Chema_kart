@@ -19,8 +19,10 @@ public class car_controller : NetworkBehaviour
     public Transform spawn_point;
     bool tiene_proyectile;
     bool boost;
-    public static float proyecile_speed = 2;
+    public bool stunt;
+    public static float proyecile_speed = 40;
     public static float boost_time = 2;
+    public static float stunt_time = 0.5f;
 
 
 
@@ -35,6 +37,7 @@ public class car_controller : NetworkBehaviour
 
             tiene_proyectile = false;
             boost = false;
+            stunt = false;
         }
     }
 
@@ -42,17 +45,32 @@ public class car_controller : NetworkBehaviour
     void Update()
     {
         if (!isLocalPlayer) return;
+
         drive();
-        if (Input.GetButton("Power")) {
+
+        if (Input.GetButtonDown("Power")) {
             if (boost)
             {
                 Boost();
             }
             else {
                 if(tiene_proyectile){
-                    Disparar();
+                    if (isClientOnly)
+                    {
+                        Rcp_crearBala();
+                    }
+                    else {
+                        Cmd_crearBala();
+                    }
+                    tiene_proyectile = false;
                 }
             }
+        }
+
+        if (stunt) {
+            Move.z = 0;
+            Move.x = 0;
+            rigi.velocity = Vector3.zero;
         }
     }
 
@@ -68,9 +86,26 @@ public class car_controller : NetworkBehaviour
         max_speed = max_speed / 1.4f;
     }
 
-    private void Disparar()
+    [ClientRpc]
+    void Rcp_crearBala()
     {
+        //Instanciamos de forma normal utilizando el network manager
+        GameObject go = NetworkManager.Instantiate(proyectile, spawn_point.position, Quaternion.identity);
+        //Le podemos hacer cambos al objeto
+        go.GetComponent<Rigidbody>().velocity = transform.forward * proyecile_speed;
+        //Ya que terminamos de hcer los cambios, podemos decirle
+        NetworkServer.Spawn(go);
+    }
 
+    [Command]
+    void Cmd_crearBala()
+    {
+        //Instanciamos de forma normal utilizando el network manager
+        GameObject go = NetworkManager.Instantiate(proyectile, spawn_point.position, Quaternion.identity);
+        //Le podemos hacer cambos al objeto
+        go.GetComponent<Rigidbody>().velocity = transform.forward * proyecile_speed;
+        //Ya que terminamos de hcer los cambios, podemos decirle
+        NetworkServer.Spawn(go);
     }
 
     private void drive() {
@@ -90,7 +125,7 @@ public class car_controller : NetworkBehaviour
             }
 
         }
-        if (Mathf.Abs(Move.z) > 0)
+        if (Mathf.Abs(rigi.velocity.z) > 0)
         {
             if (Mathf.Abs(rigi.angularVelocity.y) < max_angular_speed)
             {
@@ -120,6 +155,7 @@ public class car_controller : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!isLocalPlayer) return;
         if (other.CompareTag("speed")) {
             max_speed = max_speed*1.15f;
             acceleration = acceleration * 1.15f;
@@ -140,11 +176,26 @@ public class car_controller : NetworkBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        if (!isLocalPlayer) return;
         if (other.CompareTag("speed"))
         {
             max_speed = max_speed/1.15f;
             acceleration = acceleration / 1.15f;
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (!isLocalPlayer) return;
+        if (collision.transform.CompareTag("bala")) {
+            stunt = true;
+            Invoke("UnStunt",stunt_time);
+        }
+    }
+
+    void UnStunt() {
+        if (!isLocalPlayer) return;
+        stunt = false;
     }
 
     public static car_controller Instance
