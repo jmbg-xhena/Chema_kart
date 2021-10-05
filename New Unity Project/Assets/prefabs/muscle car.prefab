@@ -430,7 +430,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  rigi: {fileID: 0}
+  rigi: {fileID: 5304654023179176989}
   acceleration: 8
   torque_speed: 0.06
   max_speed: 13

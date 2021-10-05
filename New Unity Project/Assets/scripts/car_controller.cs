@@ -16,13 +16,15 @@ public class car_controller : NetworkBehaviour
     public static car_controller instance;
     [Header("Power-ups")]
     public GameObject proyectile;
+    public static float proyecile_speed = 40;
     public Transform spawn_point;
     bool tiene_proyectile;
-    bool boost;
     public bool stunt;
-    public static float proyecile_speed = 40;
-    public static float boost_time = 2;
     public static float stunt_time = 0.5f;
+    bool boost;
+    public static float boost_time = 2;
+
+    private bool moviendose_adelante;
 
 
 
@@ -118,6 +120,14 @@ public class car_controller : NetworkBehaviour
             if ((Input.GetAxis("Horizontal") * torque_speed / tiempo_desaceleracion * 10) < Mathf.Abs(Input.GetAxis("Vertical") * acceleration))
             {
                 Move.z = Input.GetAxis("Vertical") * acceleration - (Input.GetAxis("Horizontal") * torque_speed / tiempo_desaceleracion * 10);
+                if (Move.z > 0)
+                {
+                    moviendose_adelante = true;
+                }
+                if (Move.z < 0)
+                {
+                    moviendose_adelante = false;
+                }
             }
             else
             {
@@ -130,7 +140,14 @@ public class car_controller : NetworkBehaviour
             if (Mathf.Abs(rigi.angularVelocity.y) < max_angular_speed)
             {
                 //Move.x = Input.GetAxis("Horizontal") * torque_speed;
-                rigi.AddTorque(new Vector3(0, Input.GetAxis("Horizontal") * torque_speed, 0), ForceMode.Impulse);
+                if (moviendose_adelante)
+                {
+                    rigi.AddTorque(new Vector3(0, Input.GetAxis("Horizontal") * torque_speed, 0), ForceMode.Impulse);
+                }
+                else {
+                    rigi.AddTorque(new Vector3(0, -Input.GetAxis("Horizontal") * torque_speed, 0), ForceMode.Impulse);
+                }
+
             }
             else
             {

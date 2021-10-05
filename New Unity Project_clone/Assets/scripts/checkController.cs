@@ -7,6 +7,7 @@ public class checkController : NetworkBehaviour
 {
     public GameObject[] checks;
     public int index;
+
     // Start is called before the first frame update
     void Start()
     {
