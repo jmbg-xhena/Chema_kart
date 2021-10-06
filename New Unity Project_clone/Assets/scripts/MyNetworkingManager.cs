@@ -42,18 +42,19 @@ public class MyNetworkingManager : NetworkManager
         GameObject gameobject = Instantiate(playerPrefab);
         GameObject carro = playerPrefab;
 
-        print(message.tipo_carro);
-        if (message.tipo_carro == Car.Muscle)
+        /*if (message.tipo_carro == Car.Muscle)
         {
             carro = gameobject.GetComponent<PlayerSpawn>().muscle;
+            gameobject.GetComponent<PlayerSpawn>().subaru.SetActive(false);
         }
         if(message.tipo_carro == Car.Subaru) {
             carro = gameobject.GetComponent<PlayerSpawn>().subaru;
-        }
+            gameobject.GetComponent<PlayerSpawn>().muscle.SetActive(false);
+        }*/
 
-        carro.SetActive(true);
+        //carro.SetActive(true);
         // controlar jugador
-        NetworkServer.AddPlayerForConnection(conn, carro);
+        NetworkServer.AddPlayerForConnection(conn, gameobject);
     }
 
 

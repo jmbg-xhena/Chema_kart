@@ -49,10 +49,8 @@ public class Menu_controller : MonoBehaviour
     }
 
     private void activar_desactivar() {
-        print("----" + (MyNetworkingManager.Car)index);
         for (int i = 0; i < players.Length; i++)
         {
-            print(i);
             if (i == index)
             {
                 players[i].transform.GetChild(0).gameObject.SetActive(true);

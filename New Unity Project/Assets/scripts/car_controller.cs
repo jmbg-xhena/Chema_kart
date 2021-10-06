@@ -25,28 +25,37 @@ public class car_controller : NetworkBehaviour
     public static float boost_time = 2;
 
     private bool moviendose_adelante;
+    public MyNetworkingManager network;
+    private PlayerSpawn spawner;
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-        if (isLocalPlayer)
-        {
-            rigi = GetComponent<Rigidbody>();
-            instance = this;
-            GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraFolow>().IniciarSegir();
+        if (!isLocalPlayer) return;
 
-            tiene_proyectile = false;
-            boost = false;
-            stunt = false;
-        }
+        network = GameObject.FindObjectOfType<MyNetworkingManager>();
+        spawner = gameObject.GetComponent<PlayerSpawn>();
+
+        rigi = GetComponent<Rigidbody>();
+        instance = this;
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraFolow>().IniciarSegir();
+
+        tiene_proyectile = false;
+        boost = false;
+        stunt = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!isLocalPlayer) return;
+
+        if (!spawner.muscle.activeSelf && !spawner.subaru.activeSelf)
+        {
+            Cmd_selCoche();
+        }
 
         drive();
 
@@ -108,6 +117,25 @@ public class car_controller : NetworkBehaviour
         go.GetComponent<Rigidbody>().velocity = transform.forward * proyecile_speed;
         //Ya que terminamos de hcer los cambios, podemos decirle
         NetworkServer.Spawn(go);
+    }
+
+    [Command]
+    void Cmd_selCoche()
+    {
+        Rcp_selCoche();
+    }
+
+    [ClientRpc]
+    void Rcp_selCoche()
+    {
+        if (network.carro == MyNetworkingManager.Car.Muscle)
+        {
+            spawner.muscle.SetActive(true);
+        }
+        if (network.carro == MyNetworkingManager.Car.Subaru)
+        {
+            spawner.subaru.SetActive(true);
+        }
     }
 
     private void drive() {
