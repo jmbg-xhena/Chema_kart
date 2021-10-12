@@ -61,6 +61,7 @@
     <Compile Include="Assets\scripts\Bala.cs" />
     <Compile Include="Assets\scripts\checkController.cs" />
     <Compile Include="Assets\scripts\PlayerSpawn.cs" />
+    <Compile Include="Assets\scripts\carManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />

@@ -7,7 +7,7 @@ using Mirror;
 
 public class Menu_controller : MonoBehaviour
 {
-    public MyNetworkingManager network;
+    public carManager tipo_carro;
     public GameObject[] players;
     public int index;
 
@@ -15,6 +15,7 @@ public class Menu_controller : MonoBehaviour
 
     private void Start()
     {
+        tipo_carro = GameObject.FindObjectOfType<carManager>();
         //network.playerPrefab = players[index];
         activar_desactivar();
     }
@@ -29,7 +30,7 @@ public class Menu_controller : MonoBehaviour
             index = players.Length - 1;
         }
 
-        network.carro = (MyNetworkingManager.Car)index;
+        tipo_carro.carro = (carManager.Car)index;
         activar_desactivar();
     }
 
@@ -44,7 +45,7 @@ public class Menu_controller : MonoBehaviour
             index = 0;
         }
 
-        network.carro = (MyNetworkingManager.Car)index;
+        tipo_carro.carro = (carManager.Car)index;
         activar_desactivar();
     }
 

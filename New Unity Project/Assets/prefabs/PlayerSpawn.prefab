@@ -197,6 +197,8 @@ MonoBehaviour:
   proyectile: {fileID: 5265990364676069470, guid: 17cce6c70f9a38845a3def928d6e8649, type: 3}
   spawn_point: {fileID: 5388159052363724557}
   stunt: 0
+  Tipo_carro: {fileID: 0}
+  spawner: {fileID: 894523849122602396}
 --- !u!1001 &4709561172197739563
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -252,21 +254,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: muscle car
       objectReference: {fileID: 0}
-    - target: {fileID: 4975505648778157122, guid: eacf4ce76c265be4a9182e1e3b9a65eb, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8935416936043459169, guid: eacf4ce76c265be4a9182e1e3b9a65eb, type: 3}
-      propertyPath: m_AssetId
-      value: 335911a3e9b551b4eac54d9a33472b07
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: -5754343800709811268, guid: eacf4ce76c265be4a9182e1e3b9a65eb, type: 3}
-    - {fileID: -594529220251806965, guid: eacf4ce76c265be4a9182e1e3b9a65eb, type: 3}
-    - {fileID: 1532665281, guid: eacf4ce76c265be4a9182e1e3b9a65eb, type: 3}
-    - {fileID: 1532665280, guid: eacf4ce76c265be4a9182e1e3b9a65eb, type: 3}
-    - {fileID: 8935416936043459169, guid: eacf4ce76c265be4a9182e1e3b9a65eb, type: 3}
-    - {fileID: 5304654023179176989, guid: eacf4ce76c265be4a9182e1e3b9a65eb, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eacf4ce76c265be4a9182e1e3b9a65eb, type: 3}
 --- !u!1 &312776877570691177 stripped
 GameObject:

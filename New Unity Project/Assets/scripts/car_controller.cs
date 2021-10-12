@@ -25,8 +25,12 @@ public class car_controller : NetworkBehaviour
     public static float boost_time = 2;
 
     private bool moviendose_adelante;
-    public MyNetworkingManager network;
-    private PlayerSpawn spawner;
+    public carManager Tipo_carro;
+    [SyncVar]
+    public carManager.Car carro;
+    public PlayerSpawn spawner;
+
+    private bool coche_sel = false;
 
 
 
@@ -34,8 +38,8 @@ public class car_controller : NetworkBehaviour
     void Start()
     {
         if (!isLocalPlayer) return;
-
-        network = GameObject.FindObjectOfType<MyNetworkingManager>();
+        Tipo_carro = GameObject.FindObjectOfType<carManager>();
+        carro = Tipo_carro.carro;
         spawner = gameObject.GetComponent<PlayerSpawn>();
 
         rigi = GetComponent<Rigidbody>();
@@ -50,12 +54,8 @@ public class car_controller : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        Cmd_selCoche(carro);
         if (!isLocalPlayer) return;
-
-        if (!spawner.muscle.activeSelf && !spawner.subaru.activeSelf)
-        {
-            Cmd_selCoche();
-        }
 
         drive();
 
@@ -108,7 +108,7 @@ public class car_controller : NetworkBehaviour
         NetworkServer.Spawn(go);
     }
 
-    [Command]
+    [Command(requiresAuthority = false)]
     void Cmd_crearBala()
     {
         //Instanciamos de forma normal utilizando el network manager
@@ -119,23 +119,26 @@ public class car_controller : NetworkBehaviour
         NetworkServer.Spawn(go);
     }
 
-    [Command]
-    void Cmd_selCoche()
-    {
-        Rcp_selCoche();
-    }
 
     [ClientRpc]
-    void Rcp_selCoche()
+    void Rpc_selCoche(carManager.Car tipo_carro)
     {
-        if (network.carro == MyNetworkingManager.Car.Muscle)
+        //if (!isLocalPlayer) return;
+
+        if (tipo_carro == carManager.Car.Muscle)
         {
             spawner.muscle.SetActive(true);
         }
-        if (network.carro == MyNetworkingManager.Car.Subaru)
+        if (tipo_carro == carManager.Car.Subaru)
         {
             spawner.subaru.SetActive(true);
         }
+    }
+
+    [Command(requiresAuthority = false)]
+    void Cmd_selCoche(carManager.Car tipo_carro)
+    {
+        Rpc_selCoche(tipo_carro);
     }
 
     private void drive() {

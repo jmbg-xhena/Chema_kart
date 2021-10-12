@@ -163,11 +163,54 @@ MonoBehaviour:
   maxConnections: 100
   authenticator: {fileID: 0}
   playerPrefab: {fileID: 9130445998257570735, guid: 335911a3e9b551b4eac54d9a33472b07, type: 3}
-  autoCreatePlayer: 0
-  playerSpawnMethod: 0
+  autoCreatePlayer: 1
+  playerSpawnMethod: 1
   spawnPrefabs:
   - {fileID: 5265990364676069470, guid: 17cce6c70f9a38845a3def928d6e8649, type: 3}
+--- !u!1 &273356947
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 273356949}
+  - component: {fileID: 273356948}
+  m_Layer: 0
+  m_Name: Car_manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &273356948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 273356947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15f51d75e7af142449ff8ae3b151087c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   carro: 0
+--- !u!4 &273356949
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 273356947}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.18794277, y: -2.1747599, z: -1.3305807}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &300892990
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,7 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cd3dc84d83a7084f993e7ba2837aebd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  network: {fileID: 130574675}
+  tipo_carro: {fileID: 273356948}
   players:
   - {fileID: 497942263}
   - {fileID: 1764412630}
