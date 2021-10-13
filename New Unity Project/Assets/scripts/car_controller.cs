@@ -30,7 +30,11 @@ public class car_controller : NetworkBehaviour
     public carManager.Car carro;
     public PlayerSpawn spawner;
 
+    public GameObject carro_object;
+
     private bool coche_sel = false;
+
+    private Animator anim;
 
 
 
@@ -54,9 +58,14 @@ public class car_controller : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        Cmd_selCoche(carro);
+        if (!coche_sel) {
+            Cmd_selCoche(carro);
+            coche_sel = true;
+        }
         if (!isLocalPlayer) return;
-
+        if (!anim && carro_object) {
+            anim = carro_object.GetComponent<Animator>();
+        }
         drive();
 
         if (Input.GetButtonDown("Power")) {
@@ -87,14 +96,16 @@ public class car_controller : NetworkBehaviour
 
     private void Boost() {
         print("boost");
-        max_speed = max_speed * 1.4f;
+        max_speed = max_speed * 1.15f;
+        acceleration = acceleration * 1.15f;
         Invoke("UnBoost", boost_time);
     }
 
     private void UnBoost()
     {
         print("no boost");
-        max_speed = max_speed / 1.4f;
+        max_speed = max_speed / 1.15f;
+        acceleration = acceleration / 1.15f;
     }
 
     [ClientRpc]
@@ -127,18 +138,42 @@ public class car_controller : NetworkBehaviour
 
         if (tipo_carro == carManager.Car.Muscle)
         {
-            spawner.muscle.SetActive(true);
+            carro_object = spawner.muscle;
+            acceleration = 8f;
+            torque_speed = 0.06f;
+            max_speed = 12f;
+            max_angular_speed = 1f;
+            tiempo_desaceleracion = 6f;
         }
         if (tipo_carro == carManager.Car.Subaru)
         {
-            spawner.subaru.SetActive(true);
+            carro_object = spawner.subaru;
+            acceleration = 5f;
+            torque_speed = 0.08f;
+            max_speed = 11f;
+            max_angular_speed = 1.12f;
+            tiempo_desaceleracion = 2f;
         }
+        carro_object.SetActive(true);
     }
 
     [Command(requiresAuthority = false)]
     void Cmd_selCoche(carManager.Car tipo_carro)
     {
         Rpc_selCoche(tipo_carro);
+    }
+
+    private void animar_drercha() {
+        anim.SetTrigger("entrar_right");
+        anim.SetBool("en_derecha", true);
+        anim.SetBool("en_izquierda", false);
+    }
+
+    private void animar_izquierda()
+    {
+        anim.SetTrigger("entrar_left");
+        anim.SetBool("en_izquierda", true);
+        anim.SetBool("en_derecha", false);
     }
 
     private void drive() {
@@ -151,9 +186,36 @@ public class car_controller : NetworkBehaviour
             if ((Input.GetAxis("Horizontal") * torque_speed / tiempo_desaceleracion * 10) < Mathf.Abs(Input.GetAxis("Vertical") * acceleration))
             {
                 Move.z = Input.GetAxis("Vertical") * acceleration - (Input.GetAxis("Horizontal") * torque_speed / tiempo_desaceleracion * 10);
-                if (Move.z > 0)
+                if (Move.z < -0.5)
                 {
-                    moviendose_adelante = true;
+                    if (!anim.GetBool("en_atras"))
+                    {
+                        anim.SetTrigger("atras");
+                        anim.SetBool("en_atras", true);
+                        anim.SetBool("en_adelante", false);
+                        anim.SetBool("detenido", false);
+                    }
+                }
+                else {
+                    anim.SetBool("en_atras", false);
+                    if (Move.z > 0.5)
+                    {
+                        if (!anim.GetBool("en_adelante")) {
+                            moviendose_adelante = true;
+                            anim.SetTrigger("adelante");
+                            anim.SetBool("en_adelante", true);
+                            anim.SetBool("detenido", false);
+                        }
+                    }
+                    else {
+                        anim.SetBool("en_adelante", false);
+                        if ((Move.z > -0.5 || Move.z < 0.5) && !anim.GetBool("detenido"))
+                        {
+                            anim.SetTrigger("detener");
+                            anim.SetBool("detenido", true);
+                        }
+                    }
+
                 }
                 if (Move.z < 0)
                 {
@@ -179,6 +241,27 @@ public class car_controller : NetworkBehaviour
                     rigi.AddTorque(new Vector3(0, -Input.GetAxis("Horizontal") * torque_speed, 0), ForceMode.Impulse);
                 }
 
+                if (Input.GetAxis("Horizontal") < 0.5 && Input.GetAxis("Horizontal") > -0.5)
+                {
+                    anim.SetBool("en_derecha", false);
+                    anim.SetBool("en_izquierda", false);
+                }
+                else {
+                    if (Input.GetAxis("Horizontal") > 0.5)
+                    {
+                        if (!anim.GetBool("en_derecha"))
+                        {
+                            animar_drercha();
+                        }
+                    }
+                    else
+                    {
+                        if (!anim.GetBool("en_izquierda"))
+                        {
+                            animar_izquierda();
+                        }
+                    }
+                }
             }
             else
             {

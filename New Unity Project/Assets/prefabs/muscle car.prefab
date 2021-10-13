@@ -433,12 +433,15 @@ MonoBehaviour:
   rigi: {fileID: 5304654023179176989}
   acceleration: 8
   torque_speed: 0.06
-  max_speed: 13
+  max_speed: 12
   max_angular_speed: 1
   tiempo_desaceleracion: 6
   proyectile: {fileID: 5265990364676069470, guid: 17cce6c70f9a38845a3def928d6e8649, type: 3}
   spawn_point: {fileID: 6161550390969028902}
   stunt: 0
+  Tipo_carro: {fileID: 0}
+  carro: 0
+  spawner: {fileID: 0}
 --- !u!114 &1532665281
 MonoBehaviour:
   m_ObjectHideFlags: 0
