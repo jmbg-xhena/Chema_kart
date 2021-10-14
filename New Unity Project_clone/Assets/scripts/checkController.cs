@@ -7,6 +7,7 @@ public class checkController : NetworkBehaviour
 {
     public GameObject[] checks;
     public int index;
+    public car_controller car;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +34,7 @@ public class checkController : NetworkBehaviour
                 checks[index].SetActive(true);
             }
             else {
+                car.vueltas++;
                 index = 0;
                 checks[index].SetActive(true);
             }

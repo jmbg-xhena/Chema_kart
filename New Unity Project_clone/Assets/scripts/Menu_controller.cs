@@ -16,6 +16,7 @@ public class Menu_controller : MonoBehaviour
     private void Start()
     {
         tipo_carro = GameObject.FindObjectOfType<carManager>();
+        tipo_carro.carro = (carManager.Car)index;
         //network.playerPrefab = players[index];
         activar_desactivar();
     }

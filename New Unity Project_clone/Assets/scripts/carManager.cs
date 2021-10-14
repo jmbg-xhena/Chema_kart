@@ -25,6 +25,5 @@ public class carManager : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
-
     }
 }

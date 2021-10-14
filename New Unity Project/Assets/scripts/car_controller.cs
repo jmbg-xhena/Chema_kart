@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.SceneManagement;
 
 public class car_controller : NetworkBehaviour
 {
@@ -15,14 +16,21 @@ public class car_controller : NetworkBehaviour
     Vector3 Move;
     public static car_controller instance;
     [Header("Power-ups")]
+    public GameObject boostAura;
     public GameObject proyectile;
     public static float proyecile_speed = 40;
     public Transform spawn_point;
     bool tiene_proyectile;
     public bool stunt;
     public static float stunt_time = 0.5f;
+    private float boost_speed;
+    private float boost_accel;
+    private float normal_speed;
+    private float normal_accel;
     bool boost;
-    public static float boost_time = 2;
+    public bool boosting;
+    bool speed_up;
+    public static float boost_time = 3;
 
     private bool moviendose_adelante;
     public carManager Tipo_carro;
@@ -37,11 +45,19 @@ public class car_controller : NetworkBehaviour
     private Animator anim;
     private NetworkAnimator NAnim;
 
+    [Header("condicion de victoria")]
+    public int car_id;
+    [SyncVar]
+    public int next_car_id;
+    public int vueltas = 0;
+
     // Start is called before the first frame update
     void Start()
     {
         if (!isLocalPlayer) return;
-
+        GameManager.iniciar = false;
+        vueltas = 0;
+        car_id = next_car_id;
         Tipo_carro = GameObject.FindObjectOfType<carManager>();
         anim = gameObject.GetComponent<Animator>();
         NAnim = gameObject.GetComponent<NetworkAnimator>();
@@ -54,17 +70,25 @@ public class car_controller : NetworkBehaviour
 
         tiene_proyectile = false;
         boost = false;
+        speed_up = false;
         stunt = false;
 
-        if (isServer) return;
-        print("descativar canvas");
-        GameObject.FindObjectOfType<CanvasIniciarCarrera>().gameObject.SetActive(false);
+        if (isServer)
+        {
+            return;
+        }
+        else {
+            GameManager.index_ganador = -1;
+            print("descativar canvas");
+            GameObject.FindObjectOfType<CanvasIniciarCarrera>().button.SetActive(false);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         if (!coche_sel) {
+            Cmd_id();
             Cmd_selCoche(carro);
             coche_sel = true;
         }
@@ -77,15 +101,19 @@ public class car_controller : NetworkBehaviour
         if (Input.GetButtonDown("Power")) {
             if (boost)
             {
+                Cmd_SetBoosting();
                 Boost();
             }
-            else {
-                if(tiene_proyectile){
+            else
+            {
+                if (tiene_proyectile)
+                {
                     if (isClientOnly)
                     {
                         Rcp_crearBala();
                     }
-                    else {
+                    else
+                    {
                         Cmd_crearBala();
                     }
                     tiene_proyectile = false;
@@ -98,22 +126,158 @@ public class car_controller : NetworkBehaviour
             Move.x = 0;
             rigi.velocity = Vector3.zero;
         }
+
+        if (vueltas == GameManager.vueltas_totales) {
+            Cmd_over(car_id);
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    void Cmd_SetBoost()
+    {
+        Rpc_SetBoost();
+    }
+
+    [ClientRpc]
+    void Rpc_SetBoost()
+    {
+        boost = true;
+    }
+
+    [Command(requiresAuthority = false)]
+    void Cmd_UnSetBoost()
+    {
+        Rpc_UnSetBoost();
+    }
+
+    [ClientRpc]
+    void Rpc_UnSetBoost()
+    {
+        boost = false;
+    }
+
+    [Command(requiresAuthority = false)]
+    void Cmd_SetBoosting()
+    {
+        Rpc_SetBoosting();
+    }
+
+    [ClientRpc]
+    void Rpc_SetBoosting()
+    {
+        boosting = true;
+    }
+
+    [Command(requiresAuthority = false)]
+    void Cmd_UnSetBoosting()
+    {
+        Rpc_UnSetBoosting();
+    }
+
+    [ClientRpc]
+    void Rpc_UnSetBoosting()
+    {
+        boosting = false;
+    }
+
+    [Command(requiresAuthority = false)]
+    void Cmd_boost()
+    {
+        Rpc_boost();
+    }
+
+    [ClientRpc]
+    void Rpc_boost()
+    {
+        if (boost || speed_up) {
+            boost = false;
+            boostAura.SetActive(true);
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    void Cmd_UnBoost()
+    {
+        Rpc_UnBoost();
+    }
+
+    [ClientRpc]
+    void Rpc_UnBoost()
+    {
+        if (!boost && !speed_up)
+        {
+            boostAura.SetActive(false);
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    void Cmd_SpeedUp()
+    {
+        Rpc_SpeedUp();
+    }
+
+    [ClientRpc]
+    void Rpc_SpeedUp()
+    {
+        speed_up = true;
+    }
+
+    [Command(requiresAuthority = false)]
+    void Cmd_UnSpeedUp()
+    {
+        Rpc_UnSpeedUp();
+    }
+
+    [ClientRpc]
+    void Rpc_UnSpeedUp()
+    {
+        speed_up = false;
     }
 
     private void Boost() {
-        boost = false;
+        Cmd_boost();
         print("boost");
-        max_speed = max_speed * 1.15f;
-        acceleration = acceleration * 1.15f;
+        max_speed = boost_speed;
+        acceleration = boost_accel;
         Invoke("UnBoost", boost_time);
     }
 
     private void UnBoost()
     {
         print("no boost");
-        max_speed = max_speed / 1.15f;
-        acceleration = acceleration / 1.15f;
+        max_speed = normal_speed;
+        acceleration = normal_accel;
+        if (boosting) {
+            Cmd_UnBoost();
+        }
+        Cmd_UnBoost();
     }
+
+    [Command(requiresAuthority = false)]
+    void Cmd_id()
+    {
+        Rpc_id();
+    }
+
+    [ClientRpc]
+    void Rpc_id()
+    {
+        next_car_id++;
+    }
+
+    [Command(requiresAuthority = false)]
+    void Cmd_over(int id)
+    {
+        Rpc_over(id);
+    }
+
+    [ClientRpc]
+    void Rpc_over(int id)
+    {
+        GameManager.index_ganador = id;
+        SceneManager.LoadScene("over");
+    }
+
 
     [ClientRpc]
     void Rcp_crearBala()
@@ -142,7 +306,6 @@ public class car_controller : NetworkBehaviour
     void Rpc_selCoche(carManager.Car tipo_carro)
     {
         //if (!isLocalPlayer) return;
-
         if (tipo_carro == carManager.Car.Muscle)
         {
             carro_object = spawner.muscle;
@@ -161,6 +324,10 @@ public class car_controller : NetworkBehaviour
             max_angular_speed = 1.12f;
             tiempo_desaceleracion = 2f;
         }
+        normal_speed = max_speed;
+        normal_accel = acceleration;
+        boost_speed = max_speed * 1.15f;
+        boost_accel = acceleration * 1.15f;
         carro_object.SetActive(true);
         //gameObject.GetComponent<NetworkAnimator>().animator = carro_object.GetComponent<Animator>();
     }
@@ -296,13 +463,13 @@ public class car_controller : NetworkBehaviour
     {
         if (!isLocalPlayer) return;
         if (other.CompareTag("speed")) {
-            max_speed = max_speed*1.15f;
-            acceleration = acceleration * 1.15f;
+            Cmd_SpeedUp();
+            Boost();
         }
 
         if (other.CompareTag("boost"))
         {
-            boost = true;
+            Cmd_SetBoost();
             tiene_proyectile = false;
         }
 
@@ -318,8 +485,12 @@ public class car_controller : NetworkBehaviour
         if (!isLocalPlayer) return;
         if (other.CompareTag("speed"))
         {
-            max_speed = max_speed/1.15f;
-            acceleration = acceleration / 1.15f;
+            if (speed_up) {
+                Cmd_UnSpeedUp();
+                if (!boosting) {
+                    UnBoost();
+                }
+            }
         }
     }
 
