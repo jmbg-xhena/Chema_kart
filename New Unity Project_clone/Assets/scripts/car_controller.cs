@@ -155,6 +155,7 @@ public class car_controller : NetworkBehaviour
             tiempo_desaceleracion = 2f;
         }
         carro_object.SetActive(true);
+        gameObject.GetComponent<NetworkAnimator>().animator = carro_object.GetComponent<Animator>();
     }
 
     [Command(requiresAuthority = false)]
