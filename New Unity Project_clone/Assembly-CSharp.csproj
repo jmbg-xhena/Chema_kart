@@ -53,6 +53,7 @@
     <UnityVersion>2020.3.16f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assets\scripts\carManager.cs" />
     <Compile Include="Assets\scripts\MyNetworkingManager.cs" />
     <Compile Include="Assets\scripts\car_controller.cs" />
     <Compile Include="Assets\scripts\respawner.cs" />
@@ -61,7 +62,8 @@
     <Compile Include="Assets\scripts\Bala.cs" />
     <Compile Include="Assets\scripts\checkController.cs" />
     <Compile Include="Assets\scripts\PlayerSpawn.cs" />
-    <Compile Include="Assets\scripts\carManager.cs" />
+    <Compile Include="Assets\scripts\GameManager.cs" />
+    <Compile Include="Assets\scripts\CanvasIniciarCarrera.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Mirror\Plugins\Mono.Cecil\Mono.CecilX.dll" />

@@ -35,14 +35,16 @@ public class car_controller : NetworkBehaviour
     private bool coche_sel = false;
 
     private Animator anim;
-
-
+    private NetworkAnimator NAnim;
 
     // Start is called before the first frame update
     void Start()
     {
         if (!isLocalPlayer) return;
+
         Tipo_carro = GameObject.FindObjectOfType<carManager>();
+        anim = gameObject.GetComponent<Animator>();
+        NAnim = gameObject.GetComponent<NetworkAnimator>();
         carro = Tipo_carro.carro;
         spawner = gameObject.GetComponent<PlayerSpawn>();
 
@@ -53,6 +55,10 @@ public class car_controller : NetworkBehaviour
         tiene_proyectile = false;
         boost = false;
         stunt = false;
+
+        if (isServer) return;
+        print("descativar canvas");
+        GameObject.FindObjectOfType<CanvasIniciarCarrera>().gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -63,9 +69,9 @@ public class car_controller : NetworkBehaviour
             coche_sel = true;
         }
         if (!isLocalPlayer) return;
-        if (!anim && carro_object) {
-            anim = carro_object.GetComponent<Animator>();
-        }
+
+        if (!GameManager.iniciar) return;
+
         drive();
 
         if (Input.GetButtonDown("Power")) {
@@ -95,6 +101,7 @@ public class car_controller : NetworkBehaviour
     }
 
     private void Boost() {
+        boost = false;
         print("boost");
         max_speed = max_speed * 1.15f;
         acceleration = acceleration * 1.15f;
@@ -155,7 +162,7 @@ public class car_controller : NetworkBehaviour
             tiempo_desaceleracion = 2f;
         }
         carro_object.SetActive(true);
-        gameObject.GetComponent<NetworkAnimator>().animator = carro_object.GetComponent<Animator>();
+        //gameObject.GetComponent<NetworkAnimator>().animator = carro_object.GetComponent<Animator>();
     }
 
     [Command(requiresAuthority = false)]
@@ -165,14 +172,14 @@ public class car_controller : NetworkBehaviour
     }
 
     private void animar_drercha() {
-        anim.SetTrigger("entrar_right");
+        NAnim.SetTrigger("entrar_right");
         anim.SetBool("en_derecha", true);
         anim.SetBool("en_izquierda", false);
     }
 
     private void animar_izquierda()
     {
-        anim.SetTrigger("entrar_left");
+        NAnim.SetTrigger("entrar_left");
         anim.SetBool("en_izquierda", true);
         anim.SetBool("en_derecha", false);
     }
@@ -191,7 +198,7 @@ public class car_controller : NetworkBehaviour
                 {
                     if (!anim.GetBool("en_atras"))
                     {
-                        anim.SetTrigger("atras");
+                        NAnim.SetTrigger("atras");
                         anim.SetBool("en_atras", true);
                         anim.SetBool("en_adelante", false);
                         anim.SetBool("detenido", false);
@@ -203,7 +210,7 @@ public class car_controller : NetworkBehaviour
                     {
                         if (!anim.GetBool("en_adelante")) {
                             moviendose_adelante = true;
-                            anim.SetTrigger("adelante");
+                            NAnim.SetTrigger("adelante");
                             anim.SetBool("en_adelante", true);
                             anim.SetBool("detenido", false);
                         }
@@ -212,7 +219,7 @@ public class car_controller : NetworkBehaviour
                         anim.SetBool("en_adelante", false);
                         if ((Move.z > -0.5 || Move.z < 0.5) && !anim.GetBool("detenido"))
                         {
-                            anim.SetTrigger("detener");
+                            NAnim.SetTrigger("detener");
                             anim.SetBool("detenido", true);
                         }
                     }
